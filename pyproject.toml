@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tasky"
-version = "b1"
+version = "1.0b1"
 description = "Lightweight terminal system monitor for macOS"
 readme = "README.md"
 license = { text = "MIT" }

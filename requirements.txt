@@ -1,0 +1,13 @@
+# Python 3.9+ required
+# All other dependencies are Python stdlib or macOS system frameworks:
+#   curses, ctypes, json, os, platform, re, signal, socket,
+#   struct, subprocess, sys, threading, time, collections
+#
+# macOS system frameworks used via ctypes (always present, no install needed):
+#   IOKit   — /System/Library/Frameworks/IOKit.framework/IOKit
+#   libSystem — /usr/lib/libSystem.B.dylib  (mach_task_self_ for SMC access)
+#
+# macOS CLI tools used via subprocess (bundled with macOS / Xcode CLT):
+#   ioreg, sysctl, system_profiler
+
+psutil>=5.9.0

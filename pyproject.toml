@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "tasky"
+version = "0.1.0"
+description = "Lightweight terminal system monitor for macOS"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+keywords = ["terminal", "monitor", "macos", "htop", "system"]
+classifiers = [
+    "Environment :: Console :: Curses",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Topic :: System :: Monitoring",
+]
+dependencies = [
+    "psutil>=5.9.0",
+]
+
+[project.scripts]
+tasky = "tasky.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/HitPointX/tasky"
+Issues   = "https://github.com/HitPointX/tasky/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tasky*"]

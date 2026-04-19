@@ -6,14 +6,14 @@ Lightweight terminal system monitor for macOS. Real-time views for CPU (per-core
 
 ## Features
 
-- **Four live views** — CPU, Network, GPU, and Fans, each with scrolling history graphs
-- **Color-coded utilization** — green → yellow → red thresholds across all metrics
-- **ASCII area graphs** — scrolling filled graphs built from Unicode block characters (`▁▂▃▄▅▆▇█`)
-- **Process management** — navigate the process list, inspect full command paths, and send SIGTERM with a confirmation dialog
-- **Apple Silicon GPU** — utilization, renderer and tiler breakdown via IOKit (no `sudo` required)
-- **Fan speeds** — direct SMC read via IOKit, no third-party tools or `sudo` needed; gracefully shows `idle` when fans are stopped at low load
-- **Uptime display** — system uptime shown alongside the CPU brand in the header
-- **Lightweight** — single dependency (`psutil`), all rendering through the standard `curses` library
+- **Four live views** - CPU, Network, GPU, and Fans, each with scrolling history graphs
+- **Color-coded utilization** - green → yellow → red thresholds across all metrics
+- **ASCII area graphs** - scrolling filled graphs built from Unicode block characters (`▁▂▃▄▅▆▇█`)
+- **Process management** - navigate the process list, inspect full command paths, and send SIGTERM with a confirmation dialog
+- **Apple Silicon GPU** - utilization, renderer and tiler breakdown via IOKit (no `sudo` required)
+- **Fan speeds** - direct SMC read via IOKit, no third-party tools or `sudo` needed; gracefully shows `idle` when fans are stopped at low load
+- **Uptime display** - system uptime shown alongside the CPU brand in the header
+- **Lightweight** - single dependency (`psutil`), all rendering through the standard `curses` library
 
 ---
 
@@ -206,7 +206,7 @@ GPU Utilization (60s)
 - Overall device utilization, renderer, and tiler breakdown
 - VRAM usage on discrete GPUs; unified memory note on Apple Silicon
 - 60-second scrolling utilization history graph
-- Data sourced via `ioreg` IOAccelerator — no `sudo` required
+- Data sourced via `ioreg` IOAccelerator - no `sudo` required
 - Polls every 3 seconds to minimize subprocess overhead
 
 ---
@@ -221,7 +221,7 @@ Fan 1      ████████░░░░░░░░░░░░░░░
            [▁▁▁▁▁▂▂▃▃▄▄▅▅▆▆▇▇████▇▆▅▄▃▂▁▁▁▁▁]
 ```
 
-- Fan speeds read directly from the SMC via IOKit — **no `sudo` required**
+- Fan speeds read directly from the SMC via IOKit - **no `sudo` required**
 - Shows RPM, percentage of max speed, and 60-second sparkline history
 - Bar graph normalized between the fan's hardware-reported min and max RPM
 - Shows `idle` when fans are fully stopped (common on Apple Silicon at low load)
@@ -251,7 +251,7 @@ tasky/
         └── views.py        All tab renderers and overlay dialogs
 ```
 
-Each collector runs in a **background thread**, updating a shared dict protected by a lock. The main loop renders at 1 Hz from cached data — collection and rendering are fully decoupled.
+Each collector runs in a **background thread**, updating a shared dict protected by a lock. The main loop renders at 1 Hz from cached data - collection and rendering are fully decoupled.
 
 | Collector | Interval | Method |
 |-----------|----------|--------|
@@ -265,7 +265,7 @@ Each collector runs in a **background thread**, updating a shared dict protected
 
 ## Notes
 
-- **Apple Silicon fans** spin down completely at idle — `idle` is correct, not an error
+- **Apple Silicon fans** spin down completely at idle - `idle` is correct, not an error
 - **GPU data** on Apple Silicon reflects the unified AGX accelerator; VRAM is shared system memory
-- **Intel Macs** — CPU, memory, network, and process views work fully; GPU view depends on IOAccelerator availability; fan SMC keys follow the same `F0Ac` / `FNum` format
+- **Intel Macs** - CPU, memory, network, and process views work fully; GPU view depends on IOAccelerator availability; fan SMC keys follow the same `F0Ac` / `FNum` format
 - Terminal must support **256 colors** for the baby blue process selection highlight; falls back to cyan on 16-color terminals

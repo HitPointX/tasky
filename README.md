@@ -63,8 +63,23 @@ xcode-select --install
 
 ## Installation
 
+### Homebrew (recommended)
+
 ```bash
-git clone https://github.com/yourname/tasky.git
+brew tap HitPointX/tasky
+brew install tasky
+```
+
+Then run from anywhere:
+
+```bash
+tasky
+```
+
+### From source
+
+```bash
+git clone https://github.com/HitPointX/tasky.git
 cd tasky
 python3 -m venv .venv
 .venv/bin/pip install psutil
@@ -72,7 +87,7 @@ python3 -m venv .venv
 
 ---
 
-## Running
+## Running (from source)
 
 ```bash
 ./tasky.sh

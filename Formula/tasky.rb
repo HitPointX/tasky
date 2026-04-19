@@ -4,7 +4,7 @@ class Tasky < Formula
   desc "Lightweight terminal system monitor for macOS"
   homepage "https://github.com/HitPointX/tasky"
   url "https://github.com/HitPointX/tasky/archive/refs/tags/b1.tar.gz"
-  sha256 "0821ef0a4f438957176a1cf57160c3935fdb4110d6433deeb24ec378f2c7f052"
+  sha256 "4fbd0539a14ce10503634eda910d1b2eb6dfb6d29968a41fcc8bff936e25cc33"
   license "MIT"
   head "https://github.com/HitPointX/tasky.git", branch: "main"
 

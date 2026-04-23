@@ -2,6 +2,7 @@ import curses
 import time
 import os
 import signal
+import sys
 
 from .collectors.cpu import CPUCollector
 from .collectors.network import NetworkCollector
@@ -9,17 +10,20 @@ from .collectors.gpu import GPUCollector
 from .collectors.fans import FanCollector
 from .ui import colors
 from .ui import views
+from .ui.googly_eyes import GooglyEyes
 
 REFRESH_RATE   = 1.0
+ANIM_RATE      = 0.12   # faster refresh during eye animation
 NUM_TABS       = 4
 SEL_TIMEOUT    = 60.0   # seconds before auto-deselect
 
 
 class App:
-    def __init__(self):
+    def __init__(self, eyes_enabled=True):
         self.tab         = 0
         self.collectors  = {}
         self.running     = False
+        self.eyes_on     = eyes_enabled
 
         # Process selection
         self.sel_pid      = None    # PID of selected process (None = no selection)
@@ -31,6 +35,9 @@ class App:
         self.kill_yes     = False   # True = YES highlighted, False = NO
         self.kill_pid     = None
         self.kill_name    = ''
+
+        # Easter egg: googly eyes in the header bar
+        self.eyes = GooglyEyes()
 
     # ── lifecycle ─────────────────────────────────────────────────────────────
 
@@ -50,11 +57,17 @@ class App:
         colors.init()
         curses.curs_set(0)
         stdscr.nodelay(True)
-        stdscr.timeout(250)
+
+        if self.eyes_on:
+            curses.mousemask(curses.ALL_MOUSE_EVENTS | curses.REPORT_MOUSE_POSITION)
+            sys.stdout.write('\033[?1003h')
+            sys.stdout.flush()
 
         self._setup()
-        self.running  = True
-        last_render   = 0.0
+        self.running    = True
+        last_render     = 0.0
+        cur_timeout     = 250
+        stdscr.timeout(cur_timeout)
 
         try:
             while self.running:
@@ -63,6 +76,8 @@ class App:
                     self._handle_key(key)
 
                 now = time.monotonic()
+                if self.eyes_on:
+                    self.eyes.tick(now)
 
                 # Auto-deselect after SEL_TIMEOUT seconds of inactivity
                 if (self.sel_pid is not None
@@ -71,15 +86,34 @@ class App:
                         and now - self.sel_time > SEL_TIMEOUT):
                     self._clear_selection()
 
-                if now - last_render >= REFRESH_RATE:
+                if self.eyes_on:
+                    want_timeout = 80 if self.eyes.animating else 250
+                    if want_timeout != cur_timeout:
+                        cur_timeout = want_timeout
+                        stdscr.timeout(cur_timeout)
+
+                rate = ANIM_RATE if (self.eyes_on and self.eyes.animating) else REFRESH_RATE
+                if now - last_render >= rate:
                     last_render = now
                     self._render(stdscr)
         finally:
+            if self.eyes_on:
+                sys.stdout.write('\033[?1003l')
+                sys.stdout.flush()
             self._teardown()
 
     # ── key handling ──────────────────────────────────────────────────────────
 
     def _handle_key(self, key):
+        if key == curses.KEY_MOUSE:
+            if self.eyes_on:
+                try:
+                    _, mx, my, _, _ = curses.getmouse()
+                    self.eyes.update(mx, my)
+                except curses.error:
+                    pass
+            return
+
         # Kill confirmation dialog eats all keys
         if self.kill_active:
             self._handle_kill_key(key)
@@ -233,4 +267,6 @@ class App:
                                     self.kill_yes)
 
         views.draw_footer(stdscr, h, w)
+        if self.eyes_on:
+            self.eyes.draw(stdscr, h, w)
         stdscr.refresh()

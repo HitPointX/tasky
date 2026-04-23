@@ -10,7 +10,8 @@ def main():
         print('Tasky is designed for macOS (Apple Silicon).', file=sys.stderr)
         sys.exit(1)
 
-    app = App()
+    eyes = '--no-eyes' not in sys.argv
+    app = App(eyes_enabled=eyes)
     try:
         curses.wrapper(app.run)
     except KeyboardInterrupt:
